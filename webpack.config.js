@@ -160,7 +160,7 @@ const FE = {
 };
 
 var Serv = {
-    entry: './src/server/index.js',
+    entry: './server/index.js',
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'server.js',
@@ -182,12 +182,12 @@ var Serv = {
     externals: /^[a-z\-0-9]+$/,
 
     plugins: [
-        new webpack.ProvidePlugin({
-            'Promise': 'bluebird',
-        }),
-        // enable source-map-support by installing at the head of every chunk
-        new webpack.BannerPlugin('require("source-map-support").install();',
-            {raw: true, entryOnly: false})
+        // new webpack.ProvidePlugin({
+        //     'Promise': 'bluebird',
+        // }),
+        // // enable source-map-support by installing at the head of every chunk
+        // new webpack.BannerPlugin('require("source-map-support").install();',
+        //     {raw: true, entryOnly: false})
     ],
 
     module: {
