@@ -2,23 +2,9 @@ import express from 'express';
 import JobsController from './jobs';
 import mysql from 'mysql';
 const config = require('./../config.json');
-const connection = mysql.createConnection(config.db);
+const pool = mysql.createPool(config.db);
 const app = express();
-
-connection.connect(err => {
-    if (err) {
-        console.log(err);
-        process.exit(1);
-    }
-
-    console.log('DB connected, app running');
-});
-
-connection.on('error', err => {
-    console.log(err);
-});
-
-const jobsCtrl = new JobsController(connection);
+const jobsCtrl = new JobsController(pool);
 
 app
     .get('/', (req, res) => {

@@ -8,13 +8,19 @@ export default class JobsController {
     }
 
     getJobs (req, res) {
-        this.db.query(getJobsQuery, (err, rows, fields) => {
-            this.db.end();
+        this.db.getConnection((err, connection) => {
+            if (err) {
+                console.log(err);
+                res.json({error: 'Unable to establish connection to the database'});
+            }
 
-            if (err) res.json({success: false, error: err});
+            connection.query(getJobsQuery, (err, rows, fields) => {
+                if (err) res.json({success: false, error: err});
 
-            console.log(`GET request to jobs unathenticated returned ${rows.length} rows`);
-            res.json({items: rows});
-        });
+                console.log(`GET request to jobs unathenticated returned ${rows.length} rows`);
+                res.json({items: rows});
+            });
+        })
+
     }
 }
