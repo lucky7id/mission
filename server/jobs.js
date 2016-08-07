@@ -18,6 +18,7 @@ export default class JobsController {
                 if (err) res.json({success: false, error: err});
 
                 console.log(`GET request to jobs unathenticated returned ${rows.length} rows`);
+                connection.release();
                 res.json({items: rows});
             });
         })
