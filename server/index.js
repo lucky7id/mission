@@ -14,6 +14,10 @@ connection.connect(err => {
     console.log('DB connected, app running');
 });
 
+connection.on('error', err => {
+    console.log(err);
+});
+
 const jobsCtrl = new JobsController(connection);
 
 app
