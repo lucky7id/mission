@@ -39,7 +39,7 @@ export default class JobsController {
     }
 
     getRegToken (req, res, email) {
-        return this.checkForExistingEmail(email);
+        return this.checkForExistingEmail(email)
             .then(() => {
                 return jwt.sign({email}, this.secret);
             })

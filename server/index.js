@@ -3,8 +3,8 @@ import express from 'express';
 import mysql from 'mysql';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
-import nodemailer = 'nodemailer';
-import sgTransport = 'nodemailer-sendgrid-transport';
+import nodemailer from 'nodemailer';
+import sgTransport from 'nodemailer-sendgrid-transport';
 
 // modules
 import JobsController from './jobs';
