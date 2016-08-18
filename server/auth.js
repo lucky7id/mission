@@ -34,7 +34,7 @@ export default class AuthController {
     }
 
     getCleanUser (user) {
-        return _.without(user, 'password')
+        return _.omit(user, 'password')
     }
 
     *getToken (req, res) {
