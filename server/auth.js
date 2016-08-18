@@ -38,6 +38,8 @@ export default class AuthController {
     }
 
     *getToken (req, res) {
+        let user;
+
         if (!req.body.email || !req.body.password) {
             return res.json({error: 'Invalid Credentials'})
         }
