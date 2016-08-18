@@ -70,6 +70,8 @@ export default class JobsController {
                     text:  `Set your password at http://yukine.me/mission/signup/${token}`,
                     html: `<a href="http://yukine.me/mission/signup/${token}">Click here</a> to register`
                 });
+
+                res.send({regToken: token});
             });
     }
 
@@ -83,6 +85,7 @@ export default class JobsController {
                     if (rows.length) return reject();
 
                     resolve();
+                    connection.close();
                 });
             });
         });
