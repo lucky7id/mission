@@ -21,6 +21,7 @@ export default class JobsController {
     constructor (app, db, userService, mailer) {
         this.db = db;
         this.secret = app.get('jwtSecret');
+        this.regSecret = app.get('regSecret');
         this.userService = userService;
         this.mailer = mailer;
     }
@@ -51,8 +52,12 @@ export default class JobsController {
     handleNewUser (req, res) {
         const email = req.body.email;
         const isValidEmail = validator.validate(email);
+        const secret = req.body.secret;
 
         if (!isValidEmail) return res.json({error: 'Not a valid email'});
+        if (!secret || secret !== this.regSecret) {
+            return reg.json({error: "Not Authorized"})
+        }
 
         this.getRegToken(req, res, email)
             .then(token => {

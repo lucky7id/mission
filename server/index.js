@@ -21,6 +21,7 @@ const mailer = nodemailer.createTransport(sgTransport(mailerOptions));
 
 // initialize app with data
 app.set('jwtSecret', config.app.secret);
+app.set('regSecret', config.app.regSecret);
 // service instances
 const userService = new UserService(pool);
 
