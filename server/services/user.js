@@ -25,15 +25,20 @@ export default class UserService {
         return new Promise((resolve, reject) => {
             db.getConnection((err, connection) => {
                 if (err) {
-                    res.json({
+                    return res.json({
                         error: 'Unable to establish connection to the database'
                     });
                 }
 
                 connection.query(query, [val], (err, rows, fields) => {
-                    if (err || !rows.length) return reject(err);
+                    if (err || !rows.length) {
+                        reject(err);
+
+                        return connection.release();
+                    }
 
                     resolve(rows[0]);
+                    connection.release();
                 });
             });
         });

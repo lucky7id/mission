@@ -1,10 +1,13 @@
 import bcrypt from 'bcrypt-nodejs';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
+import Promise from 'bluebird';
 
 export default class AuthController {
-    constructor (app) {
+    constructor (app, userService) {
         if (!app) throw new Error('AuthController expects the app obejct')
+
+        this.userService = userService;
         this.secret = app.get('jwtSecret');
     }
 
@@ -12,11 +15,17 @@ export default class AuthController {
         return bcrypt.compareSync(userpass, hash);
     }
 
-    isValidToken (token) {
-        const decoded = jwt.decode(token, this.secret);
+    verifyToken (token) {
+        return new Promise((resolve, reject) => {
+            jwt.verify(token, this.secret, (err, decoded) => {
+                if (err) {
+                    reject(err);
+                    return false;
+                }
 
-        console.log(decoded);
-        return decoded;
+                resolve(decoded);
+            });
+        });
     }
 
     generateToken (payload) {
@@ -30,10 +39,14 @@ export default class AuthController {
 
 
 AuthController.prototype.getToken = Promise.coroutine(function *(req, res) {
-    let user = yield this.userService.getByEmail(req.body.email);
+    if (!req.body.email || !req.body.password) {
+        return res.json({error: 'Invalid Credentials'})
+    }
 
-    if (!this.isValidPassword(req.body.password, user[0].password)) {
-        res.json({error: 'Unable to authenticate user, invalid credentials'})
+    user = yield this.userService.getByEmail(req.body.email);
+
+    if (!user || !this.isValidPassword(req.body.password, user.password)) {
+        return res.json({error: 'Unable to authenticate user, invalid credentials'})
     }
 
     res.json({

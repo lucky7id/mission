@@ -1,27 +1,39 @@
 import * as _ from 'lodash';
 const getJobsQuery = `SELECT * from job_postings WHERE status = 'active';`;
-const getAdminJobsQuery = `SELECT * from job_postings WHERE status = 'active' or status = 'pending';`
+const getAdminJobsQuery = `
+    SELECT * from job_postings WHERE status = 'active' or status = 'pending';`;
 const postJobQuery = `
-    INSERT INTO job_postings(company, title, description, salary, external_url, tour_duration, status)
+    INSERT INTO job_postings(
+        company,
+        title,
+        description,
+        salary,
+        external_url,
+        tour_duration,
+        status
+    )
     VALUES(?, ?, ?, ?, ?, ?, ?);
     `
 
 export default class JobsController {
-    constructor (db) {
+    constructor (app, db) {
         this.db = db;
     }
 
     getJobs (req, res) {
         this.db.getConnection((err, connection) => {
             if (err) {
-                console.log(err);
-                res.json({error: 'Unable to establish connection to the database'});
+                return res.json({
+                    error: 'Unable to establish connection to the database'
+                });
             }
 
             connection.query(getJobsQuery, (err, rows, fields) => {
-                if (err) res.json({success: false, error: err});
+                if (err) {
+                    res.json({success: false, error: err});
+                    return connection.release();
+                }
 
-                console.log(`GET request to jobs unathenticated returned ${rows.length} rows`);
                 connection.release();
                 res.json({items: rows});
             });
@@ -29,7 +41,15 @@ export default class JobsController {
     }
 
     getJobValues (job) {
-        const validKeys = ['company', 'title', 'description', 'salary', 'external_url', 'tour_duration'];
+        const validKeys = [
+            'company',
+            'title',
+            'description',
+            'salary',
+            'external_url',
+            'tour_duration'
+        ];
+
         let vals = [];
 
         for (let key of validKeys) {
@@ -38,6 +58,8 @@ export default class JobsController {
             if (typeof val === 'undefined') return false;
             vals.push(val);
         }
+
+        return vals;
     }
 
     postJob (req, res) {
@@ -47,14 +69,17 @@ export default class JobsController {
 
         this.db.getConnection((err, connection) => {
             if (err) {
-                console.log(err);
-                res.json({error: 'Unable to establish connection to the database'});
+                return res.json({
+                    error: 'Unable to establish connection to the database'
+                });
             }
 
             connection.query(postJobQuery, vals, (err, rows, fields) => {
-                if (err) res.json({success: false, error: err});
+                if (err) {
+                    res.json({success: false, error: err});
+                    return connection.release();
+                }
 
-                console.log(`POST request to jobs success: ${req.body}`);
                 connection.release();
                 res.json({items: rows});
             });

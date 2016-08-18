@@ -115,7 +115,8 @@ export default class JobsController {
                 connection.query(createUserQuery, vals, (err, rows, fields) => {
                     if (err) {
                         res.json({success: false, error: err});
-                        reject();
+                        connection.release();
+                        return reject();
                     }
 
                     connection.release();
