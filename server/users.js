@@ -46,6 +46,7 @@ export default class JobsController {
                 return jwt.sign({email}, this.secret);
             })
             .catch(err => {
+                console.log(err);
                 res.json({error: "Email already exists"});
             })
     }
@@ -57,7 +58,7 @@ export default class JobsController {
 
         if (!isValidEmail) return res.json({error: 'Not a valid email'});
         if (!secret || secret !== this.regSecret) {
-            return reg.json({error: "Not Authorized"})
+            return res.json({error: "Not Authorized"})
         }
 
         this.getRegToken(req, res, email)
