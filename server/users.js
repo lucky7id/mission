@@ -139,7 +139,7 @@ export default class JobsController {
 
     *registerUser (req, res) {
         let payload = yield this.verifyToken(req.params.token);
-        let vals = getUserValues(req.body);
+        let vals = this.getUserValues(req.body);
 
         if (!vals) return res.json({error: 'Required fields missing'});
 
