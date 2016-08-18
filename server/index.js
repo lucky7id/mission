@@ -40,7 +40,7 @@ app
     .get('/jobs', jobsCtrl.getJobs.bind(jobsCtrl))
     .post('/login', authCtrl.getToken.bind(authCtrl))
     .post('/users/invite', usersCtrl.handleNewUser.bind(usersCtrl))
-    .post('/users', usersCtrl.registerUser.bind(usersCtrl))
+    .post('/users/:token', usersCtrl.registerUser.bind(usersCtrl))
     .listen(3001, () => {
         console.log('Example app listening on port 3000!');
     });
