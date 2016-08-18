@@ -85,7 +85,7 @@ export default class JobsController {
                     if (rows.length) return reject();
 
                     resolve();
-                    connection.close();
+                    connection.release();
                 });
             });
         });
