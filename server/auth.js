@@ -9,6 +9,7 @@ export default class AuthController {
 
         this.userService = userService;
         this.secret = app.get('jwtSecret');
+        this.getToken = Promise.coroutine(this.getToken).bind(this);
     }
 
     isValidPassword (userpass, hash) {
@@ -35,21 +36,20 @@ export default class AuthController {
     getCleanUser (user) {
         return _.without(user, 'password')
     }
+
+    *getToken (req, res) {
+        if (!req.body.email || !req.body.password) {
+            return res.json({error: 'Invalid Credentials'})
+        }
+
+        user = yield this.userService.getByEmail(req.body.email);
+
+        if (!user || !this.isValidPassword(req.body.password, user.password)) {
+            return res.json({error: 'Unable to authenticate user, invalid credentials'})
+        }
+
+        res.json({
+            token: this.generateToken(getCleanUser(user))
+        });
+    }
 }
-
-
-AuthController.prototype.getToken = Promise.coroutine(function *(req, res) {
-    if (!req.body.email || !req.body.password) {
-        return res.json({error: 'Invalid Credentials'})
-    }
-
-    user = yield this.userService.getByEmail(req.body.email);
-
-    if (!user || !this.isValidPassword(req.body.password, user.password)) {
-        return res.json({error: 'Unable to authenticate user, invalid credentials'})
-    }
-
-    res.json({
-        token: this.generateToken(getCleanUser(user))
-    });
-});

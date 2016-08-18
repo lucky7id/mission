@@ -24,6 +24,7 @@ export default class JobsController {
         this.regSecret = app.get('regSecret');
         this.userService = userService;
         this.mailer = mailer;
+        this.registerUser = Promise.coroutine(this.registerUser).bind(this);
     }
 
     verifyToken (token) {
@@ -131,19 +132,19 @@ export default class JobsController {
             })
         })
     }
-}
 
-AuthController.prototype.registerUser = Promise.coroutine(function *(req, res) {
-    let payload = yield this.verifyToken(req.params.token);
-    let vals = getUserValues(req.body);
+    *registerUser (req, res) {
+        let payload = yield this.verifyToken(req.params.token);
+        let vals = getUserValues(req.body);
 
-    if (!vals) return res.json({error: 'Required fields missing'});
+        if (!vals) return res.json({error: 'Required fields missing'});
 
-    if (!payload.email) {
-        return res.json({error: 'Registration token is invalid'})
+        if (!payload.email) {
+            return res.json({error: 'Registration token is invalid'})
+        }
+
+        vals = [payload.email, ...vals, 'admin', 'active'];
+
+        yield this.createUser(req, res, vals);
     }
-
-    vals = [payload.email, ...vals, 'admin', 'active'];
-
-    yield this.createUser(req, res, vals);
-});
+}

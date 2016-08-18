@@ -160,7 +160,7 @@ const FE = {
 };
 
 var Serv = {
-    entry: './server/index.js',
+    entry: ['babel-polyfill', './server/index.js'],
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'server.js',
