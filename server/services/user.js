@@ -1,8 +1,8 @@
 import Promise from 'bluebird';
 
-const getByEmailQuery = `SELECT * FROM users WHERE email = ?`;
-const getByIdQuery = `SELECT * FROM users WHERE id = ?`;
-const getByUsernameQuery = `SELECT * FROM users WHERE username = ?`;
+const getByEmailQuery = `SELECT * FROM users WHERE email = ?;`;
+const getByIdQuery = `SELECT * FROM users WHERE id = ?;`;
+const getByUsernameQuery = `SELECT * FROM users WHERE username = ?;`;
 
 export default class UserService {
     constructor (db) {
@@ -10,7 +10,7 @@ export default class UserService {
     }
 
     getByEmail (email) {
-        return this.baseQuery(email);
+        return this.baseQuery(getByEmailQuery, email);
     }
 
     getById (id) {
