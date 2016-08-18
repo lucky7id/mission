@@ -23,7 +23,7 @@ export default class UserService {
 
     baseQuery (query, val) {
         return new Promise((resolve, reject) => {
-            db.getConnection((err, connection) => {
+            this.db.getConnection((err, connection) => {
                 if (err) {
                     return res.json({
                         error: 'Unable to establish connection to the database'
