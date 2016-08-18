@@ -51,7 +51,7 @@ export default class AuthController {
         }
 
         res.json({
-            token: this.generateToken(getCleanUser(user))
+            token: this.generateToken(this.getCleanUser(user))
         });
     }
 }
